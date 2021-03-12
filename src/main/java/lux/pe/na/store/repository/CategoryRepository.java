@@ -12,4 +12,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByStatus(boolean status);
 
     Optional<Category> findByStatusAndId(boolean status, Long id);
+
+    List<Category> findByStatusAndName(boolean status, String name);
 }

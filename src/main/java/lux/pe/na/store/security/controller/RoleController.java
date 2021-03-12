@@ -25,13 +25,13 @@ public class RoleController {
         this.service = service;
     }
 
-    @PreAuthorize(ROLE_USER)
+    //@PreAuthorize(ROLE_USER)
     @GetMapping
     public ResponseEntity<List<RoleDto>> findAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
-    @PreAuthorize(ROLE_ADMIN)
+    //@PreAuthorize(ROLE_ADMIN)
     @PostMapping
     public ResponseEntity<RoleDto> save(@Valid @RequestBody RoleDto roleDto) {
         return new ResponseEntity<>(service.save(roleDto), HttpStatus.CREATED);

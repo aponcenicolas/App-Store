@@ -2,6 +2,7 @@ package lux.pe.na.store.controller;
 
 import lux.pe.na.store.model.dto.CategoryDto;
 import lux.pe.na.store.model.dto.CategoryListDto;
+import lux.pe.na.store.model.dto.FilterDto;
 import lux.pe.na.store.service.CategoryService;
 
 import static lux.pe.na.store.utils.DataStatus.*;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
+@CrossOrigin("*")
 public class CategoryController {
 
     private final CategoryService service;
@@ -26,9 +28,15 @@ public class CategoryController {
         this.service = service;
     }
 
-    @GetMapping
-    public ResponseEntity<List<CategoryListDto>> findAll() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+    @PostMapping("/get")
+    public ResponseEntity<List<CategoryListDto>> findAll(@RequestBody FilterDto filterDto) {
+        List<CategoryListDto> categories;
+        if (filterDto.getName().equals("")) {
+            categories = service.findAll();
+        } else {
+            categories = service.filterByName(filterDto);
+        }
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -36,19 +44,19 @@ public class CategoryController {
         return new ResponseEntity<>(service.getById(id), HttpStatus.OK);
     }
 
-    @PreAuthorize(ROLE_USER)
+    //@PreAuthorize(ROLE_USER)
     @PostMapping
     public ResponseEntity<CategoryDto> save(@Valid @RequestBody CategoryDto categoryDto) {
         return new ResponseEntity<>(service.save(categoryDto), HttpStatus.CREATED);
     }
 
-    @PreAuthorize(ROLE_ADMIN)
+    //@PreAuthorize(ROLE_ADMIN)
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDto> update(@PathVariable Long id, @Valid @RequestBody CategoryDto categoryDto) {
         return new ResponseEntity<>(service.update(id, categoryDto), HttpStatus.CREATED);
     }
 
-    @PreAuthorize(ROLE_ADMIN)
+    //@PreAuthorize(ROLE_ADMIN)
     @DeleteMapping("/{id}")
     public ResponseEntity<CategoryDto> delete(@PathVariable Long id) {
         return new ResponseEntity<>(service.delete(id), HttpStatus.NO_CONTENT);

@@ -1,7 +1,9 @@
 package lux.pe.na.store.implementation;
 
+import lux.pe.na.store.model.dto.FilterDto;
 import lux.pe.na.store.model.dto.ProductDto;
 import lux.pe.na.store.model.dto.ProductListDto;
+import lux.pe.na.store.model.entity.Category;
 import lux.pe.na.store.model.entity.Product;
 import lux.pe.na.store.repository.ProductRepository;
 import lux.pe.na.store.service.ProductService;
@@ -41,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductListDto> findById() {
+    public List<ProductListDto> findAll() {
         List<Product> products = repository.findByStatus(ENABLED);
         return products.stream()
                 .map(this::convertToListDto)
@@ -77,8 +79,16 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto delete(Long id) {
         ProductDto drop = convertToDto(repository.findByStatusAndId(ENABLED, id)
                 .orElseThrow(() -> new ValidNotFoundException(PRODUCT_ID + id)));
-        drop.setStatus(ENABLED);
+        drop.setStatus(DISABLED);
         Product product = convertToEntity(drop);
         return convertToDto(repository.save(product));
+    }
+
+    @Override
+    public List<ProductListDto> filterByName(FilterDto filterDto) {
+        List<Product> products = repository.findByStatusAndName(ENABLED, filterDto.getName().toLowerCase());
+        return products.stream()
+                .map(this::convertToListDto)
+                .collect(Collectors.toList());
     }
 }

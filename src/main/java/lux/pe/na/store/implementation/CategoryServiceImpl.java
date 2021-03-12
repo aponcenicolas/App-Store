@@ -2,6 +2,7 @@ package lux.pe.na.store.implementation;
 
 import lux.pe.na.store.model.dto.CategoryDto;
 import lux.pe.na.store.model.dto.CategoryListDto;
+import lux.pe.na.store.model.dto.FilterDto;
 import lux.pe.na.store.model.entity.Category;
 import lux.pe.na.store.repository.CategoryRepository;
 import lux.pe.na.store.service.CategoryService;
@@ -75,5 +76,13 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ValidNotFoundException(CATEGORY_ID + id));
         category.setStatus(DISABLED);
         return convertToDto(repository.save(category));
+    }
+
+    @Override
+    public List<CategoryListDto> filterByName(FilterDto filterDto) {
+        List<Category> categories = repository.findByStatusAndName(ENABLED, filterDto.getName().toLowerCase());
+        return categories.stream()
+                .map(this::convertToListDto)
+                .collect(Collectors.toList());
     }
 }

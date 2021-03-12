@@ -12,4 +12,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByStatus(boolean status);
 
     Optional<Product> findByStatusAndId(boolean status, Long id);
+
+    List<Product> findByStatusAndName(boolean status, String name);
 }
